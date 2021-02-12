@@ -1,0 +1,159 @@
+
+int buttonV = 0;
+int count = 0;
+
+// the setup function runs once when you press reset or power the board
+void setup() {
+  // initialize digital pin LED_BUILTIN as an output.
+
+  /* VCC */
+  pinMode(13, OUTPUT);
+  digitalWrite(13, HIGH);
+
+  /* B1 */
+  pinMode(1, OUTPUT);
+
+  /* B2 */
+  pinMode(2, OUTPUT);
+
+  /* B3 */
+  pinMode(3, OUTPUT);
+
+  /* B4 */
+  pinMode(4, OUTPUT);
+
+  /* BUTTON */
+  pinMode(6, INPUT);
+
+  /* SOUNDELEMENT */
+  pinMode(9, OUTPUT);
+}
+
+/* CHECK IF BUTTON IS PUSHED */
+int checkButtonPushed(int newV) {
+  int result = buttonV;
+  
+  if(digitalRead(6) == HIGH) {
+    result = newV;
+    }
+
+    return result;
+    } 
+
+/* IF COUNTER IS EQUAL TO BUTTONVALUE, THEN PLAY SOUND  */
+void playSound(int cu, int bv){ 
+  
+     if(cu == bv) {
+
+      tone(9, 1, 5000);
+      tone(9, 4, 5000);
+      tone(9, 10, 5000);
+      tone(9, 6, 5000);
+
+      }    
+  } 
+  
+void counter() {
+
+  /* ONE */
+  count = 1;
+  buttonV = checkButtonPushed(count);
+  playSound(count, buttonV);
+  digitalWrite(1, HIGH);
+  delay(1000);
+  digitalWrite(1, LOW);
+  
+
+  /* TWO */
+  count = 2;
+  buttonV = checkButtonPushed(count);
+  playSound(count, buttonV);
+  digitalWrite(2, HIGH);
+  delay(1000);
+  digitalWrite(2, LOW);
+  
+
+  /* THREE */
+  count = 3;
+  buttonV = checkButtonPushed(count);
+  playSound(count, buttonV);
+  digitalWrite(1, HIGH);
+  digitalWrite(2, HIGH);
+  delay(1000);
+  digitalWrite(1, LOW);
+  digitalWrite(2, LOW);
+  
+
+  /* FOUR */
+  count = 4;
+  buttonV = checkButtonPushed(count);
+  playSound(count, buttonV);
+  digitalWrite(3, HIGH);
+  delay(1000);
+  digitalWrite(3, LOW);
+ 
+
+  /* FIVE */
+
+  count = 5;
+  buttonV = checkButtonPushed(count);
+  playSound(count, buttonV);
+  digitalWrite(1, HIGH);
+  digitalWrite(3, HIGH);
+  delay(1000);
+  digitalWrite(1, LOW);
+  digitalWrite(3, LOW);
+
+  /* SIX */
+
+  count = 6;
+  checkButtonPushed(count);
+  playSound(count, buttonV);
+  digitalWrite(2, HIGH);
+  digitalWrite(3, HIGH);
+  delay(1000);
+  digitalWrite(2, LOW);
+  digitalWrite(3, LOW);
+
+  /* SEVEN */
+
+  count = 7;
+  checkButtonPushed(count);
+  playSound(count, buttonV);
+  digitalWrite(1, HIGH);
+  digitalWrite(2, HIGH);
+  digitalWrite(3, HIGH);
+  delay(1000);
+  digitalWrite(1, LOW);
+  digitalWrite(2, LOW);
+  digitalWrite(3, LOW);
+
+  /* EIGHT */
+
+  count = 8;
+  checkButtonPushed(count);
+  playSound(count, buttonV);
+  digitalWrite(4, HIGH);
+  delay(1000);
+  digitalWrite(4, LOW);
+
+  /* NINE */
+
+  count = 9;
+  checkButtonPushed(count);
+  playSound(count, buttonV);
+  digitalWrite(1, HIGH);
+  digitalWrite(4, HIGH);
+  delay(1000);
+  digitalWrite(1, LOW);
+  digitalWrite(4, LOW);
+
+  
+  
+  }
+
+
+// the loop function runs over and over again forever
+void loop() {
+  counter();
+}
