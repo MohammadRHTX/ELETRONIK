@@ -1,0 +1,42 @@
+
+/* IMPORTING A LIBRARY */
+#include <Servo.h>
+
+/* MAKING A OBJECT FROM THE LIBRARY */
+Servo myservo;  // create servo object to control a servo
+
+void setup() {
+  myservo.attach(8,600,2300);  // (pin, min, max)
+
+  /* BUTTON PIN */
+  pinMode(7, INPUT);
+
+  /* BUZZER */
+  pinMode(6, OUTPUT);
+
+  /* LOCK SWITCH */
+  pinMode(9, INPUT);
+}
+
+void loop() { 
+
+  /* IF BUTTON AND SWITCH IS CLICKED, THEN TURN THE SERVO 0 DEGREES AND MAKE A SOUND */
+  if(digitalRead(7) == HIGH && digitalRead(9) == HIGH) {
+    myservo.write(0);  // tell servo to go to a particular angle 
+    delay(2000);
+    digitalWrite(6, HIGH);
+    delay(100);
+    digitalWrite(6, LOW);
+    } 
+
+  /* IF BUTTON AND THE SWITCH IS NOT CLICKED, THEN TURN THE SERVO 90 DEGREES AND MAKE A SOUND */
+  else if(digitalRead(7) == HIGH && digitalRead(9) == LOW) {
+   myservo.write(90);
+   delay(1000);
+   digitalWrite(6, HIGH);
+    delay(100);
+    digitalWrite(6, LOW);
+    } 
+    
+}
+     
