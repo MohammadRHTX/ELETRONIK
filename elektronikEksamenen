@@ -1,0 +1,323 @@
+
+/* GLOBALE VARIABLER */
+int sensorPin_1 = A0; 
+int sensorPin_2 = A1;
+
+int pinDigtal_1 = 1;
+int pinDigtal_2 = 2;
+int pinDigtal_3 = 3;
+int pinDigtal_4 = 4;
+
+int sensorValue_1 = 0;
+int sensorValue_2 = 0;
+
+int acceptedValues_1[300];
+int acceptedValues_2[300];
+
+int lo = 0;
+
+int min_value_1;
+int min_value_2;
+
+int entered = 0;
+
+bool wait = false;
+
+bool one = false;
+
+bool activated_sensor_1 = false;
+bool activated_sensor_2 = false;
+
+bool s = false;
+bool a = false;
+bool restart = false;
+
+void setup() {
+  /* STARTER SERIAL KOMMUNICATION. DERMED KAN MÅLE RESISTANSER IGENNEM LDR'ERNE */
+  Serial.begin(9600);
+
+  /* FORTÆLLER ARDUINOEN HVILKEN PIN(S) VI VIL GERNE VIL BRUGE, OG AT DE SKAL BRUGES SOM OUTPUT  */
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+
+  pinMode(7, OUTPUT);
+  pinMode(8, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+
+}
+
+/* FUNKTION DER BRUGES TIL DISPLAYEN */
+void countInt(int n, int pin) {
+/*
+ * N = TAL DER SKAL VISES
+ * PIN = HVILKEN PIN DER SKAL BRUGES
+ */
+
+
+  if (n == 1) {
+    digitalWrite(pin, HIGH);
+    pin++;
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, LOW);
+  }
+
+  else if (n == 2) {
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, HIGH);
+    pin++;
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, LOW);
+
+  }
+
+  else if (n == 3) {
+    digitalWrite(pin, HIGH);
+    pin++;
+    digitalWrite(pin, HIGH);
+    pin++;
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, LOW);
+  }
+
+  else if (n == 4) {
+
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, HIGH);
+    pin++;
+    digitalWrite(pin, LOW);
+  }
+
+  else if (n == 5) {
+    digitalWrite(pin, HIGH);
+    pin++;
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, HIGH);
+    pin++;
+    digitalWrite(pin, LOW);
+
+  }
+
+  else if (n == 6) {
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, HIGH);
+    pin++;
+    digitalWrite(pin, HIGH);
+    pin++;
+    digitalWrite(pin, LOW);
+
+  }
+
+  else if (n == 7) {
+    digitalWrite(pin, HIGH);
+    pin++;
+    digitalWrite(pin, HIGH);
+    pin++;
+    digitalWrite(pin, HIGH);
+    pin++;
+    digitalWrite(pin, LOW);
+
+  }
+
+  else if (n == 8) {
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, HIGH);
+  }
+
+  else if (n == 9) {
+    digitalWrite(pin, HIGH);
+    pin++;
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, HIGH);
+
+  }
+
+  else if (n == 10) {
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, LOW);
+  }
+
+  else {
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, LOW);
+    pin++;
+    digitalWrite(pin, LOW);
+  }
+
+}
+
+/* ANVENDES TIL AT DISPLAY TALLET I 7-SEGMENETET */
+void counter(int e) {
+/*
+ * E = TAL
+ */
+  
+  String e_string = String(e);
+
+  int e_string_int;
+
+  int e_string_length = e_string.length();
+
+  int index = 3;
+
+  if (e_string_length == 1) {
+    countInt(e, 2);
+
+  } else {
+    for (auto x : e_string) {
+      index--;
+
+      e_string_int = x - '0';
+
+      if (index == 1) {
+        countInt(e_string_int, 2);
+      }
+
+      if (index == 2) {
+        countInt(e_string_int, 7);
+
+      }
+
+    }
+
+  }
+
+}
+
+/* FUNKTION DER BRUGES TIL AT MÅLE OM MAN GÅR IND IGENNEM DØREN */
+void enterFunction(int current_lcd_1, int current_lcd_2, int minV_1, int minV_2) {
+
+  if (current_lcd_1 > minV_1 - 50  && current_lcd_2 < minV_2 && activated_sensor_2 == false && one == true) {
+  /*  Serial.println("Trigged Sensor 1"); */
+    activated_sensor_1 = true;
+  }
+
+  if (current_lcd_2 > minV_2 && current_lcd_1 < minV_1 && activated_sensor_1 == true && activated_sensor_2 != true) {
+   /* Serial.println("Trigged Sensor 2"); */
+    entered++;
+
+  /*  Serial.println("-- ENTERED -- ");
+    Serial.println(entered); */
+    activated_sensor_1 = false;
+  }
+
+}
+
+/* FUNKTION DER BRUGES TIL AT MÅLE OM MAN GÅR UD IGENNEM DØREN */
+void exitFunction(int current_lcd_1, int current_lcd_2, int minV_1, int minV_2) {
+
+  if (current_lcd_2 > minV_2 && current_lcd_1 < minV_1 && activated_sensor_1 == false && one == true) {
+  /*  Serial.println("Trigged Sensor 2 --> fun2"); */
+    activated_sensor_2 = true;
+  }
+
+  if  (current_lcd_1 > minV_1 && current_lcd_2 < minV_2 && activated_sensor_2 == true && activated_sensor_1 != true) {
+   /* Serial.println("Trigged Sensor 1 --> fun1"); */
+    entered--;
+
+    Serial.println("-- SLIPPED -- "); 
+    Serial.println(entered);*/
+    activated_sensor_2 = false;
+  }
+}
+
+void loop() {
+
+  counter(entered);
+
+  int sensorValue_1 = analogRead(sensorPin_1);
+  int sensorValue_2 = analogRead(sensorPin_2);
+
+
+  if (lo < 301) {
+
+    acceptedValues_1[lo] = sensorValue_1;
+    acceptedValues_2[lo] = sensorValue_2;
+
+    lo++;
+  }
+
+  if (lo > 300 && wait == false) {
+    min_value_1 = acceptedValues_1[0];
+    min_value_2 = acceptedValues_2[0];
+
+    /* FIND MIN VALUE */
+    for (int i = 0; i < 300; i++) {
+      if (acceptedValues_1[i] < min_value_1) {
+        min_value_1 = acceptedValues_1[i];
+      }
+    }
+
+    for (int i = 0; i < 300; i++) {
+      if (acceptedValues_2[i] < min_value_2) {
+        min_value_2 = acceptedValues_2[i];
+      }
+    }
+
+
+    Serial.println("? ---- MIN VALUE ---- ?");
+    Serial.println(min_value_1);
+    Serial.println(min_value_2);
+
+    wait = true;
+
+  }
+
+
+  
+  /*  Serial.println("!-- RES --!"); */
+    Serial.println(sensorValue_1);
+  /*  Serial.println(sensorValue_2);*/
+
+  
+
+  if (sensorValue_1 < min_value_1 && sensorValue_2 < min_value_2 && s == false) {
+    Serial.println("!- READY -!");
+    s = true;
+  }
+
+  if (min_value_2 > 0 && wait == true && s == true) {
+
+    if (sensorValue_1 < min_value_1 && sensorValue_2 < min_value_2) {
+      activated_sensor_1 = false;
+      activated_sensor_2 = false;
+      one = false;
+
+    }
+
+    enterFunction(sensorValue_1, sensorValue_2, min_value_1, min_value_2);
+    one = true;
+    exitFunction(sensorValue_1, sensorValue_2, min_value_1, min_value_2);
+
+
+  }
+}
